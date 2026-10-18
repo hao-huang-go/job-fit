@@ -22,5 +22,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["vite.config.ts", "api", "server", "scripts", "src/jobs.ts", "src/holland.ts"]
+  "include": ["vite.config.ts", "vite.xhs.config.ts", "api", "server", "scripts", "src/jobs.ts", "src/holland.ts"]
 }

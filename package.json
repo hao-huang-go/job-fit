@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "snapshot": "node --env-file=.env.local scripts/snapshot.mjs",
+    "build:xhs": "tsc -b && vite build --config vite.xhs.config.ts && rm -f job-fit-xhs.zip && cd dist-xhs && zip -qr ../job-fit-xhs.zip . -x '*.DS_Store'"
   },
   "engines": {
     "node": "22.x"

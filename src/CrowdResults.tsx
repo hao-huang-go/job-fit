@@ -7,8 +7,13 @@ interface Props {
   code: string;
   mbti: string | null;
   stats: FitStats;
+  // Shown instead of the list while a group has fewer than MIN_GROUP people (the offline snapshot).
+  emptyHint?: string;
+  footnote?: string;
 }
 
+// Groups smaller than this show emptyHint, when one is given.
+const MIN_GROUP = 3;
 // Below this many ratings a job's average is shown but flagged as a small sample.
 const SMALL_SAMPLE = 3;
 const TOP = 10;
@@ -50,7 +55,7 @@ function JobRow({ s }: { s: JobStat }) {
 }
 
 // What people like you do: by main type, by your top two types, or by your MBTI.
-export function CrowdResults({ code, mbti, stats }: Props) {
+export function CrowdResults({ code, mbti, stats, emptyHint, footnote }: Props) {
   const groups: { key: Group; label: string }[] = [
     { key: "pair", label: `最像你（${[...code.slice(0, 2)].join("+")}）` },
     { key: "main", label: `同为${TYPE_INFO[code[0] as HollandType].name}` },
@@ -79,19 +84,23 @@ export function CrowdResults({ code, mbti, stats }: Props) {
           </button>
         ))}
       </div>
-      {size <= 1 ? (
+      {emptyHint && size < MIN_GROUP ? (
+        <p className="hint">{emptyHint}</p>
+      ) : size <= 1 ? (
         <p className="hint">你是这一组的第一位，分享给同类型的朋友，数据会越来越多 🙌</p>
       ) : (
         <p className="hint">
           {size} 位{groups.find((g) => g.key === group)?.label.replace(/（.*）/, "")}的参与者，按满意度排序：
         </p>
       )}
-      <ol className="job-stats">
-        {best.map((s) => (
-          <JobRow key={s.job} s={s} />
-        ))}
-      </ol>
-      {worst.length > 0 && (
+      {!(emptyHint && size < MIN_GROUP) && (
+        <ol className="job-stats">
+          {best.map((s) => (
+            <JobRow key={s.job} s={s} />
+          ))}
+        </ol>
+      )}
+      {!(emptyHint && size < MIN_GROUP) && worst.length > 0 && (
         <>
           <h4>同类型的人不太推荐</h4>
           <ol className="job-stats">
@@ -101,7 +110,7 @@ export function CrowdResults({ code, mbti, stats }: Props) {
           </ol>
         </>
       )}
-      <p className="note">数据来自本站参与者的匿名填写，不代表所有人。共 {stats.total} 人参与。</p>
+      <p className="note">{footnote ?? `数据来自本站参与者的匿名填写，不代表所有人。共 ${stats.total} 人参与。`}</p>
     </section>
   );
 }
