@@ -1,0 +1,163 @@
+// Common jobs people pick from. `code` is the job's typical two-letter Holland code (after O*NET's
+// interest profiles); it drives the "in theory" suggestions until there is enough real data.
+
+export const CATEGORIES = [
+  "互联网/IT",
+  "设计/创意/媒体",
+  "教育",
+  "医疗/健康",
+  "金融/财会",
+  "商业/销售/市场",
+  "行政/人事/法律",
+  "工程/制造/建筑",
+  "服务/餐饮/零售",
+  "公共/社会服务",
+  "自由职业/其他",
+] as const;
+export type Category = (typeof CATEGORIES)[number];
+
+export interface Job {
+  id: string;
+  name: string;
+  category: Category;
+  code: string; // "" for situations that are not careers (student, homemaker...), left out of suggestions
+}
+
+const j = (id: string, name: string, category: Category, code: string): Job => ({ id, name, category, code });
+
+export const JOBS: Job[] = [
+  j("software-engineer", "程序员 / 软件工程师", "互联网/IT", "IC"),
+  j("frontend-dev", "前端开发", "互联网/IT", "IA"),
+  j("data-analyst", "数据分析师", "互联网/IT", "IC"),
+  j("data-scientist", "数据科学家 / 算法工程师", "互联网/IT", "IR"),
+  j("product-manager", "产品经理", "互联网/IT", "EI"),
+  j("ux-designer", "UI/UX 设计师", "互联网/IT", "AI"),
+  j("qa-tester", "测试工程师", "互联网/IT", "CI"),
+  j("devops", "运维 / DevOps", "互联网/IT", "RC"),
+  j("it-support", "IT 支持 / 网管", "互联网/IT", "RC"),
+  j("security-engineer", "网络安全工程师", "互联网/IT", "IC"),
+  j("project-manager-it", "项目经理（IT）", "互联网/IT", "EC"),
+  j("game-designer", "游戏策划 / 游戏设计", "互联网/IT", "AE"),
+  j("operations", "互联网运营", "互联网/IT", "EC"),
+  j("graphic-designer", "平面设计师", "设计/创意/媒体", "AR"),
+  j("illustrator", "插画师", "设计/创意/媒体", "AR"),
+  j("interior-designer", "室内设计师", "设计/创意/媒体", "AE"),
+  j("architect", "建筑师", "设计/创意/媒体", "AI"),
+  j("fashion-designer", "服装设计师", "设计/创意/媒体", "AE"),
+  j("photographer", "摄影师", "设计/创意/媒体", "AR"),
+  j("video-editor", "剪辑师 / 视频后期", "设计/创意/媒体", "AR"),
+  j("copywriter", "文案 / 编辑", "设计/创意/媒体", "AE"),
+  j("journalist", "记者", "设计/创意/媒体", "AE"),
+  j("content-creator", "自媒体博主 / 内容创作者", "设计/创意/媒体", "AE"),
+  j("writer", "作家 / 小说作者", "设计/创意/媒体", "AI"),
+  j("translator", "翻译 / 口译", "设计/创意/媒体", "AS"),
+  j("musician", "音乐人 / 乐手", "设计/创意/媒体", "AS"),
+  j("actor", "演员 / 主持人", "设计/创意/媒体", "AE"),
+  j("animator", "动画师 / 3D 建模", "设计/创意/媒体", "AR"),
+  j("broadcaster", "电台 / 播客主播", "设计/创意/媒体", "AE"),
+  j("primary-teacher", "小学老师", "教育", "SA"),
+  j("secondary-teacher", "中学老师", "教育", "SA"),
+  j("kindergarten-teacher", "幼师", "教育", "SA"),
+  j("university-lecturer", "大学老师 / 教授", "教育", "IS"),
+  j("tutor", "培训 / 教培老师", "教育", "SE"),
+  j("language-teacher", "语言老师", "教育", "SA"),
+  j("special-ed", "特殊教育老师", "教育", "SR"),
+  j("researcher", "科研人员", "教育", "IR"),
+  j("librarian", "图书管理员", "教育", "CS"),
+  j("doctor", "医生", "医疗/健康", "IS"),
+  j("nurse", "护士", "医疗/健康", "SI"),
+  j("pharmacist", "药剂师", "医疗/健康", "IC"),
+  j("dentist", "牙医", "医疗/健康", "IR"),
+  j("psychologist", "心理咨询师", "医疗/健康", "SI"),
+  j("physiotherapist", "物理治疗师 / 康复师", "医疗/健康", "SR"),
+  j("vet", "兽医", "医疗/健康", "IR"),
+  j("lab-scientist", "医学检验 / 实验室", "医疗/健康", "IR"),
+  j("aged-carer", "护工 / 养老护理", "医疗/健康", "SR"),
+  j("nutritionist", "营养师", "医疗/健康", "IS"),
+  j("fitness-coach", "健身教练", "医疗/健康", "SR"),
+  j("accountant", "会计", "金融/财会", "CE"),
+  j("auditor", "审计", "金融/财会", "CE"),
+  j("financial-analyst", "金融分析师 / 投研", "金融/财会", "CI"),
+  j("banker", "银行职员", "金融/财会", "CE"),
+  j("investment-banker", "投行 / 证券", "金融/财会", "EC"),
+  j("actuary", "精算师", "金融/财会", "CI"),
+  j("financial-planner", "理财顾问", "金融/财会", "ES"),
+  j("tax-agent", "税务师", "金融/财会", "CE"),
+  j("insurance", "保险经纪 / 理赔", "金融/财会", "EC"),
+  j("sales", "销售", "商业/销售/市场", "ES"),
+  j("b2b-sales", "ToB 销售 / 大客户经理", "商业/销售/市场", "EC"),
+  j("marketing", "市场营销", "商业/销售/市场", "EA"),
+  j("brand-manager", "品牌经理", "商业/销售/市场", "EA"),
+  j("ecommerce", "电商运营", "商业/销售/市场", "EC"),
+  j("business-analyst", "商业分析 / 咨询", "商业/销售/市场", "IE"),
+  j("management-consultant", "管理咨询顾问", "商业/销售/市场", "EI"),
+  j("entrepreneur", "创业者 / 老板", "商业/销售/市场", "ER"),
+  j("real-estate-agent", "房产中介", "商业/销售/市场", "ES"),
+  j("buyer", "采购", "商业/销售/市场", "EC"),
+  j("customer-service", "客服", "商业/销售/市场", "SC"),
+  j("pr", "公关", "商业/销售/市场", "EA"),
+  j("hr", "HR / 人力资源", "行政/人事/法律", "SE"),
+  j("recruiter", "招聘 / 猎头", "行政/人事/法律", "ES"),
+  j("admin", "行政 / 文员", "行政/人事/法律", "CS"),
+  j("executive-assistant", "总裁助理 / 秘书", "行政/人事/法律", "CE"),
+  j("lawyer", "律师", "行政/人事/法律", "EI"),
+  j("paralegal", "法务 / 律师助理", "行政/人事/法律", "CE"),
+  j("civil-servant", "公务员", "行政/人事/法律", "CS"),
+  j("party-admin", "党建 / 工会 / 团委", "行政/人事/法律", "SC"),
+  j("logistics", "物流 / 供应链", "行政/人事/法律", "CE"),
+  j("civil-engineer", "土木工程师", "工程/制造/建筑", "RI"),
+  j("mechanical-engineer", "机械工程师", "工程/制造/建筑", "RI"),
+  j("electrical-engineer", "电气工程师", "工程/制造/建筑", "RI"),
+  j("embedded-engineer", "嵌入式 / 硬件工程师", "工程/制造/建筑", "IR"),
+  j("chemical-engineer", "化工工程师", "工程/制造/建筑", "IR"),
+  j("quantity-surveyor", "工料测量师 / 造价", "工程/制造/建筑", "CR"),
+  j("electrician", "电工", "工程/制造/建筑", "RI"),
+  j("plumber", "水管工", "工程/制造/建筑", "RC"),
+  j("carpenter", "木工", "工程/制造/建筑", "RC"),
+  j("mechanic", "汽修技师", "工程/制造/建筑", "RI"),
+  j("factory-worker", "工厂 / 生产线", "工程/制造/建筑", "RC"),
+  j("site-manager", "工地 / 项目经理（建筑）", "工程/制造/建筑", "ER"),
+  j("chef", "厨师", "服务/餐饮/零售", "RA"),
+  j("baker", "烘焙师", "服务/餐饮/零售", "RA"),
+  j("barista", "咖啡师", "服务/餐饮/零售", "RS"),
+  j("waiter", "餐厅服务员", "服务/餐饮/零售", "SE"),
+  j("restaurant-manager", "餐厅 / 门店经理", "服务/餐饮/零售", "ES"),
+  j("retail", "店员 / 零售", "服务/餐饮/零售", "SE"),
+  j("hairdresser", "理发师 / 美甲美容", "服务/餐饮/零售", "AS"),
+  j("tour-guide", "导游 / 旅游", "服务/餐饮/零售", "SE"),
+  j("flight-attendant", "空乘", "服务/餐饮/零售", "SE"),
+  j("hotel", "酒店", "服务/餐饮/零售", "SE"),
+  j("driver", "司机 / 网约车", "服务/餐饮/零售", "RC"),
+  j("delivery", "外卖 / 快递", "服务/餐饮/零售", "RC"),
+  j("cleaner", "保洁", "服务/餐饮/零售", "RC"),
+  j("warehouse", "仓管 / 仓库", "服务/餐饮/零售", "RC"),
+  j("bookstore", "书店店员", "服务/餐饮/零售", "SA"),
+  j("florist", "花艺师", "服务/餐饮/零售", "AR"),
+  j("police", "警察", "公共/社会服务", "RS"),
+  j("firefighter", "消防员", "公共/社会服务", "RS"),
+  j("security-guard", "保安", "公共/社会服务", "RC"),
+  j("social-worker", "社工", "公共/社会服务", "SE"),
+  j("nonprofit", "公益 / NGO", "公共/社会服务", "SE"),
+  j("funeral", "殡葬师", "公共/社会服务", "SR"),
+  j("animal-rescue", "动物救助 / 宠物", "公共/社会服务", "RS"),
+  j("pilot", "飞行员", "公共/社会服务", "RI"),
+  j("soldier", "军人", "公共/社会服务", "RE"),
+  j("farmer", "农业 / 种植养殖", "公共/社会服务", "RC"),
+  j("freelancer", "自由职业（接单）", "自由职业/其他", "AE"),
+  j("homemaker", "全职在家 / 照顾家庭", "自由职业/其他", ""),
+  j("student", "学生", "自由职业/其他", ""),
+  j("unemployed", "暂时没工作 / 在找工作", "自由职业/其他", ""),
+];
+
+export const JOB_IDS = new Set(JOBS.map((job) => job.id));
+export const jobById = new Map(JOBS.map((job) => [job.id, job]));
+
+// Jobs whose typical code matches the profile: same top two first, then same main type.
+export function theoryJobs(code: string, limit = 8) {
+  const top2 = code.slice(0, 2);
+  const pair = [...top2].sort().join("");
+  const exact = JOBS.filter((j) => j.code === top2);
+  const swapped = JOBS.filter((j) => j.code && [...j.code].sort().join("") === pair && j.code !== top2);
+  const main = JOBS.filter((j) => j.code && j.code[0] === code[0] && !exact.includes(j) && !swapped.includes(j));
+  return [...exact, ...swapped, ...main].slice(0, limit);
+}
