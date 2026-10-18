@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { ApiError, fetchPeople, fetchProfile, submitProfile, type FitStats } from "./api";
-import { CoffeeCard } from "./CoffeeCard";
 import { CrowdResults } from "./CrowdResults";
 import { hollandCode, QUESTIONS, scoreAnswers, typeName, type Scores } from "./holland";
 import { detailsComplete, emptyDetails, type Details } from "./details";
@@ -160,7 +159,6 @@ export default function App() {
           <Profile code={loaded.code} scores={loaded.scores} share={loaded.stats.typeShare} total={loaded.stats.total} />
           <CrowdResults code={loaded.code} mbti={loaded.mbti} stats={loaded.stats} />
           {saved.id && <ShareButton id={saved.id} title={`我是${typeName(loaded.code)}，你呢？`} />}
-          <CoffeeCard />
         </>
       ) : (
         <div className="card loading" />

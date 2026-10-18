@@ -601,7 +601,7 @@ h4 {
   margin-right: 6px;
 }
 
-/* Share, coffee, footer */
+/* Share, footer */
 
 .shared-kicker {
   margin: 0;
@@ -617,15 +617,6 @@ h4 {
 
 .share input {
   margin-top: 8px;
-}
-
-.coffee p {
-  margin: 0 0 12px;
-  line-height: 1.7;
-}
-
-.coffee b {
-  color: var(--accent);
 }
 
 footer {
