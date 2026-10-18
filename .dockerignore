@@ -1,0 +1,9 @@
+node_modules
+dist
+dist-xhs
+dist-server
+.env*
+*.local
+.vercel
+*.zip
+.git
