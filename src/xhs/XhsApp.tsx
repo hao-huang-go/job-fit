@@ -104,7 +104,7 @@ export default function XhsApp() {
         />
       ) : (
         <>
-          <Profile code={code} scores={scores} share={snapshot.typeShare} total={snapshot.total} />
+          <Profile code={code} scores={scores} answers={answers} share={snapshot.typeShare} total={snapshot.total} />
           <CrowdResults
             code={code}
             mbti={null}

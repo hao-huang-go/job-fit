@@ -134,7 +134,7 @@ export default function App() {
         />
       ) : stage === "profile" ? (
         <>
-          <Profile code={code} scores={scores} />
+          <Profile code={code} scores={scores} answers={saved.answers} />
           <section className="card unlock">
             <h3>同类型的真实的人，做什么工作最开心？</h3>
             <p className="hint">匿名填一下你做过的工作（1 分钟），就能看到和你同类型的人的真实去向、满意度和他们的一句话经验。</p>
@@ -156,7 +156,13 @@ export default function App() {
         </>
       ) : loaded ? (
         <>
-          <Profile code={loaded.code} scores={loaded.scores} share={loaded.stats.typeShare} total={loaded.stats.total} />
+          <Profile
+            code={loaded.code}
+            scores={loaded.scores}
+            answers={hollandCode(scoreAnswers(saved.answers)) === loaded.code ? saved.answers : undefined}
+            share={loaded.stats.typeShare}
+            total={loaded.stats.total}
+          />
           <CrowdResults code={loaded.code} mbti={loaded.mbti} stats={loaded.stats} />
           {saved.id && <ShareButton id={saved.id} title={`我是${typeName(loaded.code)}，你呢？`} />}
         </>
