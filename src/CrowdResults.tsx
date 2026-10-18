@@ -63,7 +63,10 @@ export function CrowdResults({ code, mbti, stats }: Props) {
     .filter((s) => s.avg > LOW)
     .sort((a, b) => weighted(b) - weighted(a))
     .slice(0, TOP);
-  const worst = jobs.filter((s) => s.avg <= LOW).slice(-3).reverse();
+  const worst = jobs
+    .filter((s) => s.avg <= LOW && s.n >= 2)
+    .sort((a, b) => weighted(a) - weighted(b))
+    .slice(0, 3);
 
   return (
     <section className="card crowd">
