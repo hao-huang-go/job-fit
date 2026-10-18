@@ -15,6 +15,10 @@ const TOP = 10;
 // Average rating at or below which a job is listed as not recommended rather than ranked.
 const LOW = 2.5;
 
+// Ranks jobs by average pulled toward a neutral 3 stars, so one 5-star rating doesn't outrank many 4.5s.
+const PRIOR_WEIGHT = 2;
+const weighted = (s: JobStat) => (s.avg * s.n + 3 * PRIOR_WEIGHT) / (s.n + PRIOR_WEIGHT);
+
 const jobName = (s: JobStat) => (s.custom ? s.custom : (jobById.get(s.job)?.name ?? s.job));
 const stars = (avg: number) => "★".repeat(Math.round(avg)) + "☆".repeat(5 - Math.round(avg));
 
@@ -55,7 +59,10 @@ export function CrowdResults({ code, mbti, stats }: Props) {
   const [group, setGroup] = useState<Group>("pair");
   const jobs = stats.jobs[group] ?? [];
   const size = stats.sizes[group] ?? 0;
-  const best = jobs.filter((s) => s.avg > LOW).slice(0, TOP);
+  const best = jobs
+    .filter((s) => s.avg > LOW)
+    .sort((a, b) => weighted(b) - weighted(a))
+    .slice(0, TOP);
   const worst = jobs.filter((s) => s.avg <= LOW).slice(-3).reverse();
 
   return (
