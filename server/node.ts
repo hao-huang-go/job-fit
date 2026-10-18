@@ -1,7 +1,8 @@
 import { createReadStream } from "node:fs";
-import { stat } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { extname, join, normalize, sep } from "node:path";
+import { brotliCompressSync, constants, gzipSync } from "node:zlib";
 import * as participants from "../api/participants.js";
 import * as profile from "../api/profile.js";
 
@@ -22,6 +23,31 @@ const TYPES: Record<string, string> = {
   ".ico": "image/x-icon",
   ".json": "application/json",
 };
+
+// dist/ never changes while the process runs, so each file is compressed once and kept in memory.
+const COMPRESSIBLE = new Set([".html", ".js", ".css", ".svg", ".json"]);
+const compressed = new Map<string, Buffer>();
+
+async function compressedFile(file: string, encoding: "br" | "gzip"): Promise<Buffer> {
+  const key = `${encoding}:${file}`;
+  let body = compressed.get(key);
+  if (!body) {
+    const raw = await readFile(file);
+    body =
+      encoding === "br"
+        ? brotliCompressSync(raw, { params: { [constants.BROTLI_PARAM_QUALITY]: 11 } })
+        : gzipSync(raw, { level: 9 });
+    compressed.set(key, body);
+  }
+  return body;
+}
+
+function pickEncoding(req: IncomingMessage): "br" | "gzip" | null {
+  const accepted = String(req.headers["accept-encoding"] ?? "");
+  if (/\bbr\b/.test(accepted)) return "br";
+  if (/\bgzip\b/.test(accepted)) return "gzip";
+  return null;
+}
 
 async function readBody(req: IncomingMessage): Promise<Buffer | undefined> {
   if (req.method === "GET" || req.method === "HEAD") return undefined;
@@ -49,7 +75,7 @@ async function serveApi(name: string, url: URL, req: IncomingMessage, res: Serve
   res.end(Buffer.from(await response.arrayBuffer()));
 }
 
-async function serveFile(pathname: string, res: ServerResponse) {
+async function serveFile(pathname: string, req: IncomingMessage, res: ServerResponse) {
   let file = normalize(join(DIST, decodeURIComponent(pathname)));
   if (!file.startsWith(DIST + sep) && file !== DIST) {
     res.statusCode = 400;
@@ -62,13 +88,20 @@ async function serveFile(pathname: string, res: ServerResponse) {
   const hashed = file.startsWith(join(DIST, "assets") + sep);
   res.setHeader("content-type", TYPES[extname(file)] ?? "application/octet-stream");
   res.setHeader("cache-control", hashed ? "public, max-age=31536000, immutable" : "no-cache");
-  createReadStream(file).pipe(res);
+  const encoding = COMPRESSIBLE.has(extname(file)) ? pickEncoding(req) : null;
+  if (!encoding) {
+    createReadStream(file).pipe(res);
+    return;
+  }
+  res.setHeader("vary", "accept-encoding");
+  res.setHeader("content-encoding", encoding);
+  res.end(await compressedFile(file, encoding));
 }
 
 createServer((req, res) => {
   const url = new URL(req.url ?? "/", `http://${req.headers.host ?? "localhost"}`);
   const api = /^\/api\/([a-z-]+)\/?$/.exec(url.pathname);
-  const work = api ? serveApi(api[1], url, req, res) : serveFile(url.pathname, res);
+  const work = api ? serveApi(api[1], url, req, res) : serveFile(url.pathname, req, res);
   work.catch((e: unknown) => {
     console.error("request failed", { errorType: e instanceof Error ? e.name : typeof e });
     if (!res.headersSent) res.statusCode = 500;
